@@ -1,0 +1,2 @@
+#!/bin/sh
+ls /usr/bin -sS | head -n 8 | tail -n7
