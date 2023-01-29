@@ -9,7 +9,7 @@ int main(/* int argc,char *argv[] */ ){
     const int ALLOWED_WORDS = 128;
     const int BUFFER =  2048;
 
-    printf("$");
+    printf("$$$ ");
 
     char input[BUFFER];
     char *args_array[ALLOWED_WORDS]; 
@@ -17,26 +17,31 @@ int main(/* int argc,char *argv[] */ ){
     // printf("fgets got: %s", input);     // sanity check
 
     int i = 0;                  
-    char *token = strtok(input, " ");
+    char *token = strtok(input, " \n");
     // printf("%d: [%p] ---- %s\n", i, token, token);     // sanity check 
 
     while(token != NULL && i < ALLOWED_WORDS){          // adding tokens to a char* array (p1.3)
         args_array[i] = token;                        
         ++i;
-        token = strtok(NULL, " ");
+        token = strtok(NULL, " \n");
         // printf("%d: [%p] ---- %s\n", i, token, token);  // sanity check
     }   
 
-    args_array[i] = NULL; 
-    
+    args_array[i] = NULL; // Last index NULL for terminator 
 
-    for(i = 0; i < ALLOWED_WORDS; ++i){       //sanity check
-        printf("%s ", args_array[i]);
-    }
+    execvp(args_array[0], args_array);
+    
+    // for(i = 0; i < ALLOWED_WORDS; ++i){       //sanity check
+    //     printf("%s ", args_array[i]);
+    // }
+
+
 
 
 
 }
+
+
 
     
     // Put those words in an array of char*s. Be sure to terminate the array with a NULL so you can pass it easily to execvp().
