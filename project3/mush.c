@@ -12,42 +12,44 @@ int main(/* int argc,char *argv[] */ ){
     while(1){
         printf("$$$ ");
 
+    // Get/Parse command 
         char input[BUFFER];
         char *args_array[ALLOWED_WORDS]; 
+        
         fgets(input, sizeof input, stdin);
-        // printf("fgets got: %s", input);     // sanity check
 
         int i = 0;                  
         char *token = strtok(input, " \n");
-        // printf("%d: [%p] ---- %s\n", i, token, token);     // sanity check 
 
-        while(token != NULL && i < ALLOWED_WORDS){          // adding tokens to a char* array (p1.3)
+        while(token != NULL && i < ALLOWED_WORDS){  // adding tokens to a char* array (p1.3)
             args_array[i] = token;                        
             ++i;
             token = strtok(NULL, " \n");
-            // printf("%d: [%p] ---- %s\n", i, token, token);  // sanity check
         }   
+        args_array[i] = NULL;                       // Last index NULL for terminator 
 
-        args_array[i] = NULL; // Last index NULL for terminator 
 
-        
+    // Check commands
+        //internal checks
 
-        if(strcmp(args_array[0], "exit") == 0){ // compare strings, returns difference. If command is exit; close shell
+        if(strcmp(args_array[0], "exit") == 0){     // compare strings, returns difference. If command is exit; close shell
             exit(0);
         }
-
-        int id = fork();           
-
-        if(id==0){              // Child process calls exec
-            execvp(args_array[0], args_array);
-        } else 
-            wait(NULL);         // Parent waits for it
-        
-        if(strcmp(args_array[0], "cd") == 0){ // Compares strings, if command is cd should be a syscall
+        if(strcmp(args_array[0], "cd") == 0){       // Compares strings, if command is cd should be an internal syscall
             if(chdir(args_array[1])==-1){
                 perror("Error: ");
             }
         } 
+
+        //create child process
+        int id = fork();           
+        if(id==0){                                   // Child process calls exec
+            execvp(args_array[0], args_array);
+            exit(0);                                 // if child process exec fails, exit(0) (fixes multiple exit input error)
+        } else 
+            wait(NULL);                             // Parent waits for it
+        
+    
     }
 
 }
