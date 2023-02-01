@@ -56,8 +56,3 @@ int main(/* int argc,char *argv[] */ ){
 
 
 
-    
-    // Put those words in an array of char*s. Be sure to terminate the array with a NULL so you can pass it easily to execvp().
-    // I suggest you stop here as well, and make sure the array is built as you expected. It's easier to debug small bits at a time than the whole thing at once.
-    // Call execvp() with your array. Pass the 0th element as the first argument ot execvp().
-
