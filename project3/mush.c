@@ -4,7 +4,7 @@
 #include <unistd.h> 
 #include <sys/wait.h>
 
-int main(/* int argc,char *argv[] */ ){
+int main(void){
 
     const int ALLOWED_WORDS = 128;
     const int BUFFER =  2048;
@@ -45,7 +45,7 @@ int main(/* int argc,char *argv[] */ ){
         int id = fork();           
         if(id==0){                                   // Child process calls exec
             execvp(args_array[0], args_array);
-            exit(0);                                 // if child process exec fails, exit(0) (fixes multiple exit input error)
+            exit(1);                                 // if child process exec fails, exit(1) (fixes multiple exit input error)
         } else 
             wait(NULL);                             // Parent waits for it
         
