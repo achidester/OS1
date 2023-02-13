@@ -12,13 +12,31 @@ struct node *node_alloc(int value){
 }
 
 void llist_insert_head(struct node **head, struct node *n){
-    if(*head == NULL){
+    if(*head == NULL){                      // if no head, set head to this node
         printf("Succesfully replaced NULL head");
        *head = n;
+    }
+    else{
+        struct node *temp = *head;          // set head to new node, make old head the next of new head.
+        n->next = temp;
+        *head = n;
+        
     }
 
     return;
 }
+
+
+struct node *llist_delete_head(struct node **head){
+    if(*head == NULL){                      // if the head is NULL, do nothing.
+        return NULL;
+    }
+    struct node *prev_head = *head;
+    *head = (*head)->next;
+    return NULL;
+}
+
+
 
 
 void node_free(struct node *n){
