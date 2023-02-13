@@ -12,33 +12,33 @@ struct node *node_alloc(int value){
 }
 
 void llist_insert_head(struct node **head, struct node *n){
-    if(*head == NULL){                      // if no head, set head to this node
-       *head = n;
-    }
+    if(*head == NULL)*head = n;                  // if no head, set head to this node
     else{
-        struct node *temp = *head;          // set head to new node, make old head the next of new head.
+        struct node *temp = *head;               // set head to new node, make old head the next of new head.
         n->next = temp;
         *head = n;
     }
-
     return;
 }
 
 
 struct node *llist_delete_head(struct node **head){
-    if(*head == NULL){                      // if the head is NULL, do nothing.
-        return NULL;
-    }
+    if(*head == NULL) return NULL;           // if the head is NULL, do nothing.
+        
     struct node *prev_head = *head;
     *head = (*head)->next;
     return prev_head;
 }
 
 void llist_insert_tail(struct node **head, struct node *n){
-    struct node *pointer = *head;
-    while(pointer->next !=NULL) 
-        pointer = pointer->next;
-    pointer->next = n;
+    if(*head == NULL){
+        *head = n;}
+    else{
+        struct node *pointer = *head;
+        while(pointer->next !=NULL) 
+            pointer = pointer->next;
+        pointer->next = n;
+    }
 }
 
 void llist_print(struct node *head){
@@ -48,9 +48,7 @@ void llist_print(struct node *head){
     while(pointer !=NULL){
         int value = pointer->value;
         printf("%d", value);
-        if(pointer->next !=NULL){
-            printf("->");
-        }
+        if(pointer->next !=NULL) printf("->");
         pointer = pointer->next;
     }
     printf("\n");
@@ -65,8 +63,6 @@ void node_free(struct node *n){
 
 int main(int argc, char *argv[]){
     struct node *head = NULL;
-
-
     for(int i = 1; i < argc; i++){
 
         if(strcmp(argv[i], "ih") == 0){ 
@@ -80,9 +76,7 @@ int main(int argc, char *argv[]){
         } else if(strcmp(argv[i], "p") == 0){ 
             llist_print(head);
         }
-        
     }
-    
     return 0;
 }
 
