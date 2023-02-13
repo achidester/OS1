@@ -20,14 +20,21 @@ void node_free(Node* node){
 }
 
 int main(int argc, char *argv[]){
-    // struct node *head = NULL;
-    // int n = 0;
+    Node *head = NULL;
+    Node *tail = NULL;
+
+    int n;
 
     for(int i = 1; i < argc; i++){
 
         if(strcmp(argv[i], "ih") == 0){ 
             Node* node_pointer = node_alloc(atoi(argv[i+1]));
+            head = node_pointer;
             printf("%s stored as node struct %p", argv[i], node_pointer);
+        }
+
+        if(strcmp(argv[i], "p") == 0){ 
+            printf("\n%d is the head", head->value);
         }
 
 
