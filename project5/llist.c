@@ -20,7 +20,6 @@ void llist_insert_head(struct node **head, struct node *n){
         struct node *temp = *head;          // set head to new node, make old head the next of new head.
         n->next = temp;
         *head = n;
-        
     }
 
     return;
@@ -34,6 +33,11 @@ struct node *llist_delete_head(struct node **head){
     struct node *prev_head = *head;
     *head = (*head)->next;
     return NULL;
+}
+
+void llist_print(struct node *head){
+
+    
 }
 
 
@@ -55,7 +59,8 @@ int main(int argc, char *argv[]){
             llist_insert_head(&head, n);
 
         }
-
+        
+        // currently only checking head should be set to llist print.
         if(strcmp(argv[i], "p") == 0){ 
             printf("\n%d is the head", head->value);
         }
