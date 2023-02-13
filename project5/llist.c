@@ -13,7 +13,6 @@ struct node *node_alloc(int value){
 
 void llist_insert_head(struct node **head, struct node *n){
     if(*head == NULL){                      // if no head, set head to this node
-        printf("Succesfully replaced NULL head");
        *head = n;
     }
     else{
@@ -32,15 +31,31 @@ struct node *llist_delete_head(struct node **head){
     }
     struct node *prev_head = *head;
     *head = (*head)->next;
-    return NULL;
+    return prev_head;
+}
+
+void llist_insert_tail(struct node **head, struct node *n){
+    struct node *pointer = *head;
+    while(pointer->next !=NULL) 
+        pointer = pointer->next;
+    pointer->next = n;
 }
 
 void llist_print(struct node *head){
-
+    struct node *pointer = head;
+    if(pointer == NULL) printf("[empty]");
     
+    while(pointer !=NULL){
+        int value = pointer->value;
+        printf("%d", value);
+        if(pointer->next !=NULL){
+            printf("->");
+        }
+        pointer = pointer->next;
+    }
+    printf("\n");
+
 }
-
-
 
 
 void node_free(struct node *n){
@@ -57,17 +72,14 @@ int main(int argc, char *argv[]){
         if(strcmp(argv[i], "ih") == 0){ 
             struct node *n = node_alloc(atoi(argv[i+1]));
             llist_insert_head(&head, n);
-
+        } else if(strcmp(argv[i], "it") == 0){   
+            struct node *n = node_alloc(atoi(argv[i+1]));
+            llist_insert_tail(&head, n);
+        } else if(strcmp(argv[i], "dh") == 0){
+            llist_delete_head(&head);
+        } else if(strcmp(argv[i], "p") == 0){ 
+            llist_print(head);
         }
-        
-        // currently only checking head should be set to llist print.
-        if(strcmp(argv[i], "p") == 0){ 
-            printf("\n%d is the head", head->value);
-        }
-
-        //low priority: add check for isdigit (note:atoi will convert char to 0)
-        int input_num = atoi(argv[i]);
-        printf("\narg %d is %d", i, input_num);
         
     }
     
