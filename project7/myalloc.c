@@ -4,6 +4,7 @@
 #include <sys/mman.h>
 
 #define ALIGNMENT 16   // Must be power of 2
+#define MIN_FREE_SIZE 16
 #define GET_PAD(x) ((ALIGNMENT - 1) - (((x) - 1) & (ALIGNMENT - 1)))
 #define PADDED_SIZE(x) ((x) + GET_PAD(x))
 #define PTR_OFFSET(p, offset) ((void*)((char *)(p) + (offset)))
@@ -16,6 +17,28 @@ struct block{
     int in_use;   // Boolean
 };
 
+void split_space (struct block *current_node, int requested_size){
+    int available_space = current_node->size;
+    int required_space = PADDED_SIZE(requested_size) + PADDED_SIZE(sizeof(struct block));
+
+    if(available_space >= required_space + MIN_FREE_SIZE){
+        struct block *split = PTR_OFFSET(current_node, required_space);
+        split->next = current_node->next;
+        split->size = available_space - required_space;
+        current_node->next = split;
+        current_node->size = PADDED_SIZE(requested_size);
+    }
+    return;
+
+}   
+
+void myfree(struct block *node){
+    // Assume initial pass; no need for magic number
+
+    // Compute location of with pointer subtraction, free mem, mark that space as not in use
+
+}
+
 void *myalloc(int byte_size){
     if (head == NULL) {
         head = mmap(NULL, 1024, PROT_READ|PROT_WRITE,
@@ -24,10 +47,11 @@ void *myalloc(int byte_size){
         head->size = 1024 - PADDED_SIZE(sizeof(struct block));
         head->in_use = 0;
     }
-    struct block* pointer = head;
+    struct block *pointer = head;
+    int padded_bytes = PADDED_SIZE(byte_size);
 
     while(pointer != NULL){
-        if(pointer->in_use == 0 && pointer->size >= byte_size){
+        if(pointer->in_use == 0 && pointer->size >= padded_bytes){
             //split_space(current_node/pointer, requested_size)
 
             pointer->in_use = 1;
@@ -39,6 +63,7 @@ void *myalloc(int byte_size){
     }
     return NULL;
 }
+
 
 void print_data(void){
     struct block *b = head;
