@@ -17,7 +17,7 @@ struct block{
     int in_use;   // Boolean
 };
 
-void split_space (struct block *current_node, int requested_size){
+void split_space(struct block *current_node, int requested_size){
     int available_space = current_node->size;
     int required_space = PADDED_SIZE(requested_size) + PADDED_SIZE(sizeof(struct block));
 
@@ -28,14 +28,14 @@ void split_space (struct block *current_node, int requested_size){
         current_node->next = split;
         current_node->size = PADDED_SIZE(requested_size);
     }
-    return;
-
 }   
 
-void myfree(struct block *node){
+void myfree(void *p){
     // Assume initial pass; no need for magic number
 
     // Compute location of with pointer subtraction, free mem, mark that space as not in use
+    struct block *node = PTR_OFFSET(p, - PADDED_SIZE(sizeof(p)));
+    node->in_use = 0;
 
 }
 
@@ -52,7 +52,7 @@ void *myalloc(int byte_size){
 
     while(pointer != NULL){
         if(pointer->in_use == 0 && pointer->size >= padded_bytes){
-            //split_space(current_node/pointer, requested_size)
+            split_space(pointer, byte_size);
 
             pointer->in_use = 1;
             int padded_block_size = PADDED_SIZE(sizeof(struct block));
@@ -65,7 +65,7 @@ void *myalloc(int byte_size){
 }
 
 
-void print_data(void){
+void print_data(){
     struct block *b = head;
 
     if (b == NULL) {
@@ -88,10 +88,31 @@ void print_data(void){
 }
 
 int main(){
+    //example1
+    // void *p;
+    // p = myalloc(512);
+    // print_data();
+    // myfree(p);
+    // print_data();
+
+    //example2
+    // myalloc(10); print_data();
+    // myalloc(20); print_data();
+    // myalloc(30); print_data();
+    // myalloc(40); print_data();
+    // myalloc(50); print_data();
+
+    //example3
     void *p;
-    print_data();
-    p = myalloc(64);
-    print_data();
+    myalloc(10);     print_data();
+    p = myalloc(20); print_data();
+    myalloc(30);     print_data();
+    myfree(p);       print_data();
+    myalloc(40);     print_data();
+    myalloc(10);     print_data();
+
+
+
 
     return 0;
 }
