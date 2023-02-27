@@ -34,7 +34,9 @@ void *myalloc(int byte_size){
 
             return PTR_OFFSET(pointer, padded_block_size);
         }
+        pointer = pointer->next;
     }
+    return NULL;
 }
 
 // given print function

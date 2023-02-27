@@ -75,6 +75,8 @@ int main(int argc, char *argv[]){
             llist_delete_head(&head);
         } else if(strcmp(argv[i], "p") == 0){ 
             llist_print(head);
+        }else if(strcmp(argv[i], "f") == 0){ 
+            node_free(atoi(argv[i+1]));
         }
     }
     return 0;
