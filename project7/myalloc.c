@@ -31,9 +31,7 @@ void split_space(struct block *current_node, int requested_size){
 }   
 
 void myfree(void *p){
-    // Assume initial pass; no need for magic number
-
-    // Compute location of with pointer subtraction, free mem, mark that space as not in use
+    // Assume valid initial pass; no need for magic number
     struct block *node = PTR_OFFSET(p, - PADDED_SIZE(sizeof(p)));
     node->in_use = 0;
 
@@ -89,6 +87,7 @@ void print_data(){
 
 int main(){
     //example1
+
     // void *p;
     // p = myalloc(512);
     // print_data();
@@ -96,6 +95,7 @@ int main(){
     // print_data();
 
     //example2
+
     // myalloc(10); print_data();
     // myalloc(20); print_data();
     // myalloc(30); print_data();
@@ -103,6 +103,7 @@ int main(){
     // myalloc(50); print_data();
 
     //example3
+
     void *p;
     myalloc(10);     print_data();
     p = myalloc(20); print_data();
@@ -110,9 +111,6 @@ int main(){
     myfree(p);       print_data();
     myalloc(40);     print_data();
     myalloc(10);     print_data();
-
-
-
 
     return 0;
 }
