@@ -67,7 +67,7 @@ void new_process(int proc_num, int page_count)
     mem[64 + proc_num] = page_table;
 
     // Set the page table to map virt -> phys // Virtual page number is i // Physical page number is new_page
-    for(int i; i <= page_count; i++){
+    for(int i = 0; i < page_count; i++){
         int new_page = allocate_page();
 
         if(new_page == 0xff){
@@ -138,15 +138,22 @@ int main(int argc, char *argv[])
     
     initialize_mem();
 
-    for (int i = 1; i < argc; i++) {                        // Check for print free map
-        if (strcmp(argv[i], "pfm") == 0) {
+    for (int i = 1; i < argc; i++) {                        
+
+        if (strcmp(argv[i], "np") == 0) {             
+            int proc_num = atoi(argv[++i]);
+            int page_count = atoi(argv[++i]);
+            new_process(proc_num, page_count);
+        }
+        else if (strcmp(argv[i], "pfm") == 0) {             // Check for print free map
             print_page_free_map();
         }
         else if (strcmp(argv[i], "ppt") == 0) {             // Check for print page table
             int proc_num = atoi(argv[++i]);
             print_page_table(proc_num);
         }
-
         // TODO: more command line arguments
     }
+
+    return 0;
 }
