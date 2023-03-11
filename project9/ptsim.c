@@ -42,13 +42,12 @@ unsigned char get_page_table(int proc_num)
 }
 
 int allocate_page(){
-    for(int page_num = 0; page_num< PAGE_COUNT; ++page_num)
+    for(int page_num = 0; page_num< PAGE_COUNT; page_num++)
         if(mem[page_num] == 0){
             mem[page_num] = 1;
             return page_num;
-        }else{
-            return 0xff;
         }
+     return 0xff;    
 }
 
 //
@@ -58,11 +57,27 @@ int allocate_page(){
 //
 void new_process(int proc_num, int page_count)
 {
-    (void)proc_num;   // remove after implementation
-    (void)page_count; // remove after implementation
+    int page_table = allocate_page();
 
-    int page_num = allocate_page();
+    if(page_table == 0xff){
+            printf("OOM: proc %d: page table\n", proc_num);
+            return;
+    }
 
+    mem[64 + proc_num] = page_table;
+
+    // Set the page table to map virt -> phys // Virtual page number is i // Physical page number is new_page
+    for(int i; i <= page_count; i++){
+        int new_page = allocate_page();
+
+        if(new_page == 0xff){
+            printf("OOM: proc %d: data page\n", proc_num);
+            return;
+        }
+
+        int pt_addr = get_address(page_table, i);
+        mem[pt_addr] = new_page;
+    }
 
 }
 
