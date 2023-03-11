@@ -18,7 +18,7 @@ unsigned char mem[MEM_SIZE];
 //
 int get_address(int page, int offset)
 {
-    return (page << PAGE_SHIFT) | offset;
+    return (page << PAGE_SHIFT) | offset;           // VPN BITS + OFFSET BITS
 }
 
 //
@@ -41,6 +41,16 @@ unsigned char get_page_table(int proc_num)
     return mem[ptp_addr];
 }
 
+int allocate_page(){
+    for(int page_num = 0; page_num< PAGE_COUNT; ++page_num)
+        if(mem[page_num] == 0){
+            mem[page_num] = 1;
+            return page_num;
+        }else{
+            return 0xff;
+        }
+}
+
 //
 // Allocate pages for a new process
 //
@@ -51,7 +61,9 @@ void new_process(int proc_num, int page_count)
     (void)proc_num;   // remove after implementation
     (void)page_count; // remove after implementation
 
-    // TODO
+    int page_num = allocate_page();
+
+
 }
 
 //
@@ -111,11 +123,11 @@ int main(int argc, char *argv[])
     
     initialize_mem();
 
-    for (int i = 1; i < argc; i++) {
+    for (int i = 1; i < argc; i++) {                        // Check for print free map
         if (strcmp(argv[i], "pfm") == 0) {
             print_page_free_map();
         }
-        else if (strcmp(argv[i], "ppt") == 0) {
+        else if (strcmp(argv[i], "ppt") == 0) {             // Check for print page table
             int proc_num = atoi(argv[++i]);
             print_page_table(proc_num);
         }
