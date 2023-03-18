@@ -41,6 +41,31 @@ unsigned char get_page_table(int proc_num)
     return mem[ptp_addr];
 }
 
+//
+// Get physical page for associated virtual page
+//
+int get_physical_addr(int proc_num, int virtual_addr){
+    int virtual_page = virtual_addr >> 8;
+    int offset = virtual_addr * 255;
+    int page_table = get_page_table(proc_num);
+    int phys_page = mem[get_address(page_table, virtual_page)];
+    int phys_addr = (phys_page << 8) | offset;  
+    return phys_addr;
+}
+
+void store_value(int proc_num, int virt_addr, int value){
+    int phys_addr = get_physical_addr(proc_num, virt_addr);
+    mem[phys_addr] = value;
+    printf("Store proc %d: %d => %d, value=%d\n", proc_num, virt_addr, phys_addr, value);
+}
+
+void load_value(int proc_num, int virt_addr){
+    int phys_addr = get_physical_addr(proc_num, virt_addr);
+    int value = mem[phys_addr];
+    printf("Load proc %d: %d => %d, value=%d\n", proc_num, virt_addr, phys_addr, value);
+}
+
+
 int allocate_page(){
     for(int page_num = 0; page_num< PAGE_COUNT; page_num++)
         if(mem[page_num] == 0){
@@ -177,7 +202,13 @@ int main(int argc, char *argv[])
             int proc_num = atoi(argv[++i]);
             print_page_table(proc_num);
         }
-        // TODO: more command line arguments
+        else if (strcmp(argv[i], "kp") == 0) {             // Check for print page table
+            int proc_num = atoi(argv[++i]);
+            kill_process(proc_num);
+        }
+
+
+
     }
 
     return 0;
