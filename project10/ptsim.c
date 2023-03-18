@@ -50,11 +50,30 @@ int allocate_page(){
      return 0xff;    
 }
 
-void deallocate_page(int page){
-    if(mem[page]->in_use!=0){
-        mem[page]->in_use==0;
-    }
+//
+// Deallocates pages setting value to 0
+//
+
+void deallocate_page(int page_num){
+        mem[page_num]=0;
 }
+
+//
+// Deallocates procedure pages and its associated page_table
+//
+
+void kill_process(int proc_num){
+    int page_table = get_page_table(proc_num);
+
+    for(int i=0; i < PAGE_COUNT; ++i){
+        int ptp_addr = get_address(page_table, i);
+        if(mem[ptp_addr] != 0){
+            deallocate_page(mem[ptp_addr]);
+        }
+    }
+    deallocate_page(page_table);
+}
+
 
 //
 // Allocate pages for a new process
