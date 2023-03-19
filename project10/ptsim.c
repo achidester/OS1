@@ -46,10 +46,11 @@ unsigned char get_page_table(int proc_num)
 //
 int get_physical_addr(int proc_num, int virtual_addr){
     int virtual_page = virtual_addr >> 8;
-    int offset = virtual_addr * 255;
+    int offset = virtual_addr & 255;
     int page_table = get_page_table(proc_num);
     int phys_page = mem[get_address(page_table, virtual_page)];
-    int phys_addr = (phys_page << 8) | offset;  
+    int phys_addr = (phys_page << 8) | offset; 
+
     return phys_addr;
 }
 
@@ -157,7 +158,7 @@ void print_page_free_map(void)
 //
 void print_page_table(int proc_num)
 {
-    printf("--- PROCESS %d PAGE TABLE ---\n", proc_num);
+    printf("\n--- PROCESS %d PAGE TABLE ---\n", proc_num);
 
     // Get the page table for this process
     int page_table = get_page_table(proc_num);
@@ -206,8 +207,17 @@ int main(int argc, char *argv[])
             int proc_num = atoi(argv[++i]);
             kill_process(proc_num);
         }
-
-
+        else if (strcmp(argv[i], "sb") == 0) {             // Check for print page table
+            int proc_num = atoi(argv[++i]);
+            int virt_addr = atoi(argv[++i]);
+            int value = atoi(argv[++i]);
+            store_value(proc_num, virt_addr, value);
+        }
+        else if (strcmp(argv[i], "lb") == 0) {             // Check for print page table
+            int proc_num = atoi(argv[++i]);
+            int virt_addr = atoi(argv[++i]);
+            load_value(proc_num, virt_addr);
+        }
 
     }
 
